@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <iostream>
+#include <cstdlib>
 
 class SerialConnection {
 
@@ -29,8 +30,9 @@ bool SerialConnection::readStruct(StructVariable& result) {
     BYTE startByte;
     DWORD read;
 
-    // Wait for start byte (0xFF)
-    while (true) {
+    while (true) { // Wait for start byte (0xFF)
+
+		std::cerr << "Waiting for start byte...\n";
         BOOL success = ReadFile(hSerial, &startByte, 1, &read, NULL);
 
         if (!success) {
@@ -42,7 +44,6 @@ bool SerialConnection::readStruct(StructVariable& result) {
             break; // We got the start byte!
     }
 
-    // Read the actual struct
     BOOL success = ReadFile(hSerial, &result, sizeof(StructVariable), &read, NULL);
 
     if (!success || read != sizeof(StructVariable)) {

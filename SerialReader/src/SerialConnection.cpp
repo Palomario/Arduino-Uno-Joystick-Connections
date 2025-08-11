@@ -12,7 +12,6 @@ SerialConnection::~SerialConnection() {
 }
 
 HANDLE SerialConnection::createHSerial() {
-    const char* port = "\\\\.\\COM3";
     HANDLE hSerial = CreateFileA(
         port,
         GENERIC_READ | GENERIC_WRITE,
@@ -53,17 +52,19 @@ void SerialConnection::configureSerialPort() {
         exit(EXIT_FAILURE);
     }
 
-    COMMTIMEOUTS timeouts = { 0 };
-    timeouts.ReadIntervalTimeout = 50;          // ms between characters
-    timeouts.ReadTotalTimeoutConstant = 50;     // total read timeout
-    timeouts.ReadTotalTimeoutMultiplier = 10;   // per-byte timeout
+    COMMTIMEOUTS to = { 0 };
+    to.ReadIntervalTimeout = 50;  // ms between bytes
+    to.ReadTotalTimeoutConstant = 100; // overall read cap
+    to.ReadTotalTimeoutMultiplier = 10;  // per-byte add
+    to.WriteTotalTimeoutConstant = 100;
+    to.WriteTotalTimeoutMultiplier = 10;
 
-    timeouts.WriteTotalTimeoutConstant = 50;
-    timeouts.WriteTotalTimeoutMultiplier = 10;
-
-    if (!SetCommTimeouts(hSerial, &timeouts)) {
-        std::cerr << "Error setting timeouts: " << GetLastError() << std::endl;
-        CloseHandle(hSerial);
+    if (!SetCommTimeouts(hSerial, &to)) {
+        std::cerr << "SetCommTimeouts failed: " << GetLastError() << "\n";
         exit(EXIT_FAILURE);
     }
+
+    // Optional but helpful
+    SetupComm(hSerial, 1 << 12, 1 << 12);
+    PurgeComm(hSerial, PURGE_RXCLEAR | PURGE_TXCLEAR);
 }
