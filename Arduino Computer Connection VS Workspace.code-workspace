@@ -1,0 +1,56 @@
+{
+	"folders": [
+		{ "path": "ArduinoUno" },
+		{ "path": "SerialReader" },
+		{ "path": "shared" }
+	],
+	"settings": { "task.autoDetect": "off" },
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			// ----- Arduino (PlatformIO) -----
+			{
+				"label": "Arduino: Build",
+				"type": "shell",
+				"command": "${env:USERPROFILE}\\.platformio\\penv\\Scripts\\platformio.exe",
+				"args": ["run"],
+				"options": { "cwd": "${workspaceFolder:ArduinoUno}" },
+				"group": { "kind": "build", "isDefault": false },
+				"problemMatcher": "$platformio"
+			},
+			{
+				"label": "Arduino: Upload",
+				"type": "shell",
+				"command": "${env:USERPROFILE}\\.platformio\\penv\\Scripts\\platformio.exe",
+				"args": ["run", "-t", "upload"],
+				"options": { "cwd": "${workspaceFolder:ArduinoUno}" },
+				"group": { "kind": "build", "isDefault": false },
+				"problemMatcher": "$platformio"
+			},
+
+			// ----- PC (MSVC cl.exe) -----
+			{
+				"label": "Build SerialReader (CMD)",
+				"type": "shell",
+				"command": "call \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat\" && cl /nologo /EHsc /std:c++17 /W4 src\\main.cpp src\\SerialConnection.cpp /I include /I ..\\shared\\include /Fo\"build\\\\\" /Fd\"build\\\\vc.pdb\" /Fe:\"build\\SerialReader.exe\" /link user32.lib",
+				"options": {
+					"cwd": "${workspaceFolder:SerialReader}",
+					"shell": {
+					"executable": "C:\\Windows\\System32\\cmd.exe",
+					"args": ["/d","/c"]
+					}
+				},
+				"problemMatcher": [],
+				"group": { "kind": "build", "isDefault": false },
+			},
+			{
+				"label": "PC: Run",
+				"type": "shell",
+				"command": "cd /d \"${workspaceFolder:SerialReader}\\build\"; ./SerialReader.exe",
+				"group": { "kind": "build", "isDefault": false },
+				
+			}
+		]
+	}
+
+}

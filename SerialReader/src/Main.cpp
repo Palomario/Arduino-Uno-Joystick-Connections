@@ -28,6 +28,7 @@ int main() {
 
         if (ArduinoConnection.readStruct<Payload>(payload)) {
             std::cout <<
+            
                 "x: "       << payload.x << ", " <<
                 "y: "       << payload.y << ", " <<
                 "Button: "  << (payload.sw == 0 ? "PRESSED" : "RELEASED") << "\n";
