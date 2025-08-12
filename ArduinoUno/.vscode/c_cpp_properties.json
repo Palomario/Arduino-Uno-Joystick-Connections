@@ -46,7 +46,7 @@
                 ""
             ],
             "cStandard": "gnu11",
-            "cppStandard": "gnu++11",
+            "cppStandard": "gnu++17",
             "compilerPath": "C:/Users/carde/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
                 "-mmcu=atmega328p",

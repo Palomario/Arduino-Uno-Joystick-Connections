@@ -39,4 +39,9 @@ void loop() {
   p.sw = digitalRead(SW);
   p.crc = payload_checksum(p);
   Serial.write(reinterpret_cast<uint8_t*>(&p), sizeof(Payload));
+
+  /*char buffer[50];
+  snprintf(buffer, sizeof(buffer), "X: %d, Y: %d, SW: %d\n", rawX, rawY, sw);
+  Serial.write(buffer);*/
+
 }
