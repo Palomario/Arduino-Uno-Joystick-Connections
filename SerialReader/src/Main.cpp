@@ -14,7 +14,10 @@ const int halfJoystickValue = maxJoystickValue / 2;
 int main() {
     const char* port = "\\\\.\\COM3";
     DWORD baudRate = CBR_57600;
-    int ByteSize = 5;
+    // Configure the serial port to use 8 data bits. The previous value of 5
+    // caused the OS to truncate every byte coming from the Arduino which
+    // resulted in malformed frames and unreadable binary data.
+    int ByteSize = 8;
     SerialConnection ArduinoConnection(port, baudRate, ByteSize);
 
 
