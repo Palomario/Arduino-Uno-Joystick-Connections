@@ -10,13 +10,17 @@ const int SW = 2;
 const int BestArduinoPinLED = 13;
 const int ClickLED = BestArduinoPinLED;
 const int NoMovementLED = 12;
+//const int CheckingSOFBytes = 11;
 
 const int movingThreshold = 10; // This variables is to tell if the joystick is moving or not
+
+static constexpr uint8_t SOF1_VALUE = 0xFF;
+static constexpr uint8_t SOF2_VALUE = 0x55;
 
 void setup() {
   pinMode(SW, INPUT_PULLUP); 
   pinMode(ClickLED, OUTPUT);
-  pinMode(NoMovementLED, OUTPUT);
+  //pinMode(CheckingSOFBytes, OUTPUT);
 
   Serial.begin(57600);
 }
@@ -33,7 +37,15 @@ void loop() {
   digitalWrite(ClickLED, sw == 0 ? HIGH : LOW);
 
   // Send Payload Information
-  Payload p;
+  Payload p{};
+
+  /*if (p.sof1 == SOF1_VALUE && p.sof2 == SOF2_VALUE) {
+    digitalWrite(CheckingSOFBytes, HIGH);
+  } else {
+    digitalWrite(CheckingSOFBytes, LOW);
+  }*/
+
+
   p.x  = analogRead(VRx);
   p.y  = analogRead(VRy);
   p.sw = digitalRead(SW);
