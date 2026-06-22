@@ -1,0 +1,36 @@
+# Build outputs
+SerialReader/build/
+ArduinoUno/.pio/
+ArduinoUno/.pioenvs/
+ArduinoUno/.piolibdeps/
+
+# PlatformIO generated files
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Compiled binaries and objects
+*.exe
+*.obj
+*.o
+*.a
+*.lib
+*.dll
+*.pdb
+*.ilk
+*.idb
+*.exp
+*.map
+
+# VS Code local state
+.vscode/
+!.vscode/extensions.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
