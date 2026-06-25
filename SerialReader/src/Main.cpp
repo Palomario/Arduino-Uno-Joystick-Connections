@@ -6,34 +6,57 @@
 #include "Payload.h"
 #include "SerialConnection.h"
 
-const float moveMultiplier = 0.03f;
-const int movingThreshold = 10;
+const float moveMultiplier = 0.3f;
+const int movingThreshold = 30;
 const int maxJoystickValue = 1023;
 const int halfJoystickValue = maxJoystickValue / 2;
 
 int main() {
     const char* port = "\\\\.\\COM3";
-    DWORD baudRate = CBR_57600;
-    int ByteSize = 5;
+    DWORD baudRate = CBR_9600;
+    int ByteSize = 8;
     SerialConnection ArduinoConnection(port, baudRate, ByteSize);
-
 
     uint8_t last_sw = 1;
     float accX = 0, accY = 0;
 
+    int lastX = -1;
+    int lastY = -1;
+	int lastSW = -1;
+
     while (true) {
-		Payload payload = { 0 };
+        Payload payload = {};
 
-        std::cerr << "Loop Working -" << std::endl;
+        if (!ArduinoConnection.readStruct<Payload>(payload)) {
+            std::cerr << "Failed to read payload.\n";
+            continue;
+        }
 
-        if (ArduinoConnection.readStruct<Payload>(payload)) {
-            std::cout <<
+           
+
+        if (payload.x != lastX || payload.y != lastY || payload.sw != lastSW) { 
             
-                "x: "       << payload.x << ", " <<
-                "y: "       << payload.y << ", " <<
-                "Button: "  << (payload.sw == 0 ? "PRESSED" : "RELEASED") << "\n";
-        } else {
-            std::cerr << "Failed to read payload." << std::endl;
+
+            //bool noMovement = abs(rawX - 512) < movingThreshold && abs(rawY - 512) < movingThreshold;
+
+            std::string xString = std::to_string(payload.x - 512);
+            std::string yString = std::to_string(payload.y - 512);
+            std::string SWString = payload.sw == 0 ? "ON" : "OFF";
+
+            
+
+            if ((std::abs(payload.x - 512) > movingThreshold || std::abs(payload.y - 512) > movingThreshold) || payload.sw != lastSW) {
+                system("cls");
+
+                std::cout << "x:" << xString
+                    << ", y:" << yString
+                    << ", sw:" << SWString
+                    << '\n';
+            }
+
+			lastSW = payload.sw;
+            lastX = payload.x;
+            lastY = payload.y;
         }
 
         accX += (payload.x - halfJoystickValue) / 10 * moveMultiplier;
@@ -68,8 +91,5 @@ int main() {
         }
     }
 
-    std::cout << "Press Enter to exit...\n";
-    std::cin.get();
-
-	return 0;
+    return 0;
 }

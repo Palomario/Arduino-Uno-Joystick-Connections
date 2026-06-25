@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <iostream>
 #include <cstdlib>
+#include "Payload.h"
 
 class SerialConnection {
 
@@ -27,20 +28,12 @@ private:
 
 template <typename StructVariable>
 bool SerialConnection::readStruct(StructVariable& result) {
-    BYTE byte;
-    DWORD read;
-
-    std::cerr << "Reading Structure" << std::endl;
-
+    BYTE byte = 0;
+    DWORD read = 0;
 
     bool checkingSOF1 = true; 
 
     while (true) {
-        std::cerr << "Got header: 0x" << std::hex << int(StructVariable::SOF1_VALUE)
-          << " 0x" << int(StructVariable::SOF2_VALUE)
-          << " | last bytes read: 0x" << int(byte)
-          << std::dec << "\n";
-
 
         if (!ReadFile(hSerial, &byte, 1, &read, NULL)) {
             std::cerr << "ReadFile failed while hunting SOF: " << GetLastError() << "\n";
